@@ -1,0 +1,8 @@
+r_region_name,r_gen,r_fire_starter,r_water_starter,r_grass_starter,r_box_1,r_box_2,r_box_3
+Kanto,1,Charmander,Squirtle,Bulbasaur,Articuno,Articuno,Moltres
+Johto,2,Cyndaquil,Totodile,Chikorita,Ho-oh,Lugia,
+Hoenn,3,Torchic,Mudkip,Treeko,Kyogre,Groudon,Rayquaza
+Sinnoh,4,Chimchar,Piplup,Turtwig,Dialga,Palkia,Giratina
+Unova,5,Tepig,Oshawott,Snivy,Zekrom,Reshiram,Kyurem
+Kalos,6,Fennekin,Froakie,Chespin,Xerneas,Yveltal,Zygarde
+Alola,7,Litten,Popplio,Rowlet,Solgaleo,Lunala,Necrozma

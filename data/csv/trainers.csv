@@ -1,0 +1,96 @@
+t_id,t_region,t_gen,t_name,t_type,t_role
+1,Kanto ,1,Blaine,fire,gym_leader
+2,Kanto ,1,Misty,water,gym_leader
+3,Kanto ,1,Erika,grass,gym_leader
+4,Kanto ,1,Lt. Surge,electric,gym_leader
+5,Kanto ,1,Koga,poison,gym_leader
+6,Kanto ,1,Giovanni,ground,gym_leader
+7,Kanto ,1,Sabrina,psychic,gym_leader
+8,Kanto ,1,Brock,rock,gym_leader
+9,Johto,2,Whitney,normal,gym_leader
+10,Johto,2,Pryce,ice,gym_leader
+11,Johto,2,Chuck,fighting,gym_leader
+12,Johto,2,Falkner,flying,gym_leader
+13,Johto,2,Bugsy,bug,gym_leader
+14,Johto,2,Morty,ghost,gym_leader
+15,Johto,2,Clair,dragon,gym_leader
+16,Johto,2,Jasmine,steel,gym_leader
+17,Hoenn,3,Norman,normal,gym_leader
+18,Hoenn,3,Flannery,fire ,gym_leader
+19,Hoenn,3,Wallace,water,gym_leader
+20,Hoenn,3,Wattson,electric,gym_leader
+21,Hoenn,3,Brawly,fighting,gym_leader
+22,Hoenn,3,Winona,flying,gym_leader
+23,Hoenn,3,Tate & Liza,psychic,gym_leader
+24,Hoenn,3,Roxanne,rock,gym_leader
+25,Sinnoh,5,Crasher Wake,water,gym_leader
+26,Sinnoh,5,Gardenia,grass,gym_leader
+27,Sinnoh,5,Volkner,electric,gym_leader
+28,Sinnoh,5,Candice,ice,gym_leader
+29,Sinnoh,5,Maylene,fighting,gym_leader
+30,Sinnoh,5,Roark,rock,gym_leader
+31,Sinnoh,5,Fantina,ghost,gym_leader
+32,Sinnoh,5,Byron,steel,gym_leader
+33,Unova,5,Lenora,normal ,gym_leader
+34,Unova,5,Chili,fire,gym_leader
+35,Unova,5,Cress,water,gym_leader
+36,Unova,5,Cilan,grass,gym_leader
+37,Unova,5,Elesa,electric,gym_leader
+38,Unova,5,Brycen,ice ,gym_leader
+39,Unova,5,Clay,ground,gym_leader
+40,Unova,5,Skyla,flying,gym_leader
+41,Unova,5,Burgh,bug,gym_leader
+42,Unova,5,Drayden & Iris,dragon,gym_leader
+43,Kalos,6,Ramos,grass,gym_leader
+44,Kalos,6,Clemont,electric,gym_leader
+45,Kalos,6,Wulfric,ice ,gym_leader
+46,Kalos,6,Korrina,fighting,gym_leader
+47,Kalos,6,Olympia,psychic,gym_leader
+48,Kalos,6,Viola,bug,gym_leader
+49,Kalos,6,Grant,rock,gym_leader
+50,Kalos,6,Valerie,fairy ,gym_leader
+51,Alola,7,Ilima,normal ,gym_leader
+52,Alola,7,Kiawe,fire,gym_leader
+53,Alola,7,Lana,water,gym_leader
+54,Alola,7,Mallow,grass,gym_leader
+55,Alola,7,Sophocles,electric,gym_leader
+56,Alola,7,Mina,fairy ,gym_leader
+57,Alola,7,Acerola,Ghost,gym_leader
+58,Kanto ,1,Lorelei,ice,elite
+59,Kanto ,1,Bruno,fighting,elite
+60,Kanto ,1,Agatha,ghost,elite
+61,Kanto ,1,Lance,dragon,elite
+62,Kanto ,1,Blue,,champion
+63,Johto,2,Will,psychic,elite
+64,Johto,2,Koga,posion,elite
+65,Johto,2,Bruno,fighting,elite
+66,Johto,2,Karen,dark,elite
+67,Johto,2,Lance,dragon,champion
+68,Hoenn,3,Sidney,dark,elite
+69,Hoenn,3,Phoebe,ghost,elite
+70,Hoenn,3,Glacia,ice,elite
+71,Hoenn,3,Drake,dragon,elite
+72,Hoenn,3,Steven,steel,champion
+73,Hoenn,3,Wallace,water,champion
+74,Sinnoh,5,Aaron,bug,elite
+75,Sinnoh,5,Bertha,ground,elite
+76,Sinnoh,5,Flint,fire,elite
+77,Sinnoh,5,Lucian,psychic,elite
+78,Sinnoh,5,Cynthia,,champion
+79,Unova,5,Shauntal,ghost,elite
+80,Unova,5,Marshal,fighting,elite
+81,Unova,5,Grimsley,dark,elite
+82,Unova,5,Caitlin,psychic,elite
+83,Unova,5,Alder,,champion
+84,Unova,5,Iris,dragon,champion
+85,Kalos,6,Malva,fire,elite
+86,Kalos,6,Siebold,water,elite
+87,Kalos,6,Wikstrom,steel,elite
+88,Kalos,6,Drasna,dragon,elite
+89,Kalos,6,Diantha,,champion
+90,Alola,7,Hala,fighting,elite
+91,Alola,7,Molayne,steel,elite
+92,Alola,7,Olvia,rock,elite
+93,Alola,7,Acerola,ghost,elite
+94,Alola,7,Kahili,flying,elite
+95,Alola,7,Professor Kukui,,champion
