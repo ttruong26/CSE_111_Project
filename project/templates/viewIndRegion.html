@@ -1,0 +1,76 @@
+<!-- This is the page to view all regions found in the region table in pokeData.db -->
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{{ regionInfo[0][0] }} Region</title>
+    </head>
+    <body>
+        <h1>View {{ regionInfo[0][0] }} Region </h1>
+         <br>
+
+         <!-- Redirect to the homepage  -->
+         <a href = '/'><button>HomePage</button></a><br><br>
+         <a href = '/viewAllRegions'><button>View All Regions</button></a><br><br>
+
+
+         <h3>Region Info: </h3><br>
+         <table border = 1 >
+
+            <!-- Define column headers -->
+            <tr>
+                <th>r_region_name</th>
+                <th>r_gen</th>
+                <th>r_fire_starter</th>
+                <th>r_water_starter</th>
+                <th>r_grass_starter</th>
+                <th>r_box_1</th>
+                <th>r_box_2</th>
+                <th>r_box_3</th>
+            </tr>
+
+            <!-- The Regions variable was passed to this html page as an iterable list.
+                We can iterate through this list and display the data within the list using Jinja2 -->
+
+            {% for row in regionInfo %}
+        
+            <tr>
+               <td> {{ row[0] }} </td>
+               <td> {{ row[1] }} </td>
+               <!-- We can use the information pulled from each list object to include arguments in our redirects. 
+                    Here, we use the pokemon's name attribute to pass to another route that will pull up the view page for that pokemon -->
+               <td><a href="/viewIndPokemon/{{ row[2] }}"><img src="/static/images/pokemon/{{ row[2] }}.png" alt="Test" width="100"><br>{{ row[2] }}</a></td>
+               <td><a href="/viewIndPokemon/{{ row[3] }}"><img src="/static/images/pokemon/{{ row[3] }}.png" alt="Test" width="100"><br>{{ row[3] }}</a></td>
+               <td><a href="/viewIndPokemon/{{ row[4] }}"><img src="/static/images/pokemon/{{ row[4] }}.png" alt="Test" width="100"><br>{{ row[4] }}</a></td>
+               <td><a href="/viewIndPokemon/{{ row[5] }}"><img src="/static/images/pokemon/{{ row[5] }}.png" alt="Test" width="100"><br>{{ row[5] }}</a></td>
+               <td><a href="/viewIndPokemon/{{ row[6] }}"><img src="/static/images/pokemon/{{ row[6] }}.png" alt="Test" width="100"><br>{{ row[6] }}</a></td>
+               <td><a href="/viewIndPokemon/{{ row[7] }}"><img src="/static/images/pokemon/{{ row[7] }}.png" alt="Test" width="100"><br>{{ row[7] }}</a></td>
+
+            </tr>
+        
+            {% endfor %}
+         </table> <br>
+
+
+         <h3>Trainers: </h3><br>
+         <table border = 1>
+            <tr>
+                <th>t_name</th>
+                
+            </tr>
+
+            {% for row in regionTrainers %}
+        
+            <tr>
+                <!-- Dislays ALL of the attributes for the trainer, we can change the order as we wish. -->
+               <td><a href="/viewIndTrainer/{{ row[0] }}"><img src="/static/images/trainers/{{ row[0] }}.png" alt="Test" width="100"><br>{{ row[0] }}</a></td>
+
+
+            </tr>
+        
+            {% endfor %}
+         </table> <br>
+
+    </body>
+</html>
