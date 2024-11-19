@@ -1,0 +1,34 @@
+<!-- This is the page to view all abilities found in the abilities table in pokeData.db -->
+<!DOCTYPE html>
+<html>
+    <body>
+        <h1>View All Abilities: </h1>
+         <br>
+
+         <!-- Redirect to the homepage  -->
+         <a href = '/'><button>HomePage</button></a><br>
+
+
+         <h3>Abilities Info: </h3><br>
+         <table border = 1>
+
+            <!-- Define column headers -->
+            <tr>
+                <th>a_name</th>
+                <th>a_generation</th>
+                <th>a_description</th>
+            </tr>
+
+            {% for row in allAbilities %}
+        
+            <tr>
+                <td><a href="/viewIndAbility/{{ row[0] }}">{{ row[0] }}</a></td>
+               <td> {{ row[2] }} </td>
+               <td> {{ row[1] }} </td>
+            </tr>
+        
+            {% endfor %}
+         </table> <br>
+
+    </body>
+</html>

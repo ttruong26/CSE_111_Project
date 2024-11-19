@@ -1,0 +1,52 @@
+<!-- This is the page to view all abilities found in the abilities/pokemon_to_abilities tables in pokeData.db -->
+<!DOCTYPE html>
+<html>
+    <body>
+        <h1>{{allAbilities[0][0]}}: </h1>
+         <br>
+
+         <!-- Redirect to the homepage  -->
+         <a href = '/'><button>HomePage</button></a><br>
+         <a href = '/viewAllAbilities'><button>All Abilities</button></a><br><br>
+
+         <table border = 1>
+
+            <!-- Define column headers -->
+            <tr>
+                <th>a_name</th>
+                <th>a_generation</th>
+                <th>a_description</th>
+            </tr>
+
+            {% for row in allAbilities %}
+        
+            <tr>
+                <td><a href="/viewIndAbility/{{ row[0] }}">{{ row[0] }}</a></td>
+               <td> {{ row[2] }} </td>
+               <td> {{ row[1] }} </td>
+            </tr>
+        
+            {% endfor %}
+         </table> <br>
+
+
+         <h3>Pokemon with {{allAbilities[0][0]}}: </h3><br>
+         <table border = 1>
+
+            <!-- Define column headers -->
+            <tr>
+                <th>name</th>
+            </tr>
+
+            {% for row in pokemonWithAbility %}
+        
+            <tr>
+                <td><img src="/static/images/pokemon/{{ row[0] }}.png" alt="Test" width="100"><br><a href="/viewIndPokemon/{{ row[0] }}">{{ row[0] }}</a></td>
+               <!-- <td><a href="/viewIndPokemon/{{ row[0] }}">{{ row[0] }}</a></td> -->
+            </tr>
+        
+            {% endfor %}
+         </table> <br>
+
+    </body>
+</html>

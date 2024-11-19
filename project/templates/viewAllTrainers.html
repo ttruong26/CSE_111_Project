@@ -1,0 +1,78 @@
+<!-- This is the page to view all trainers found in the trainers table in pokeData.db -->
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<title>Sample</title>
+		<link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet">
+	</head>
+    <body>
+        <div class="container">
+                    <h1>View All Trainers: </h1>
+                    <br>
+
+                    <!-- Redirect to the homepage  -->
+                    <a href = '/'><button>HomePage</button></a><br>
+
+
+                    <table id="sampleTableA" class="table table-striped sampleTable">
+
+                        <!-- Define column headers -->
+                     
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Trainer Name</th>
+                                <th>Id</th>
+                                <th>Region</th>
+                                <th>Type</th>
+                                <th>Role</th>
+                                <th>Generation</th>
+                            </tr>
+                        </thead>
+
+                        <!-- The Regions variable was passed to this html page as an iterable list.
+                            We can iterate through this list and display the data within the list using Jinja2 -->
+
+                        {% for row in allTrainers %}
+                    
+                        <tr>
+                            <td><img src="/static/images/trainers/{{ row[3] }}.png" alt="Test" width="100"></td>
+                            <td><a href="/viewIndTrainer/{{ row[3] }}">{{ row[3] }}</a></td>
+                            <td> {{ row[0] }} </td>
+                            <td> {{ row[1] }} </td>
+                            <td><a href="/viewIndType/{{ row[4] }}">
+                                    <img src="/static/images/typeIcons/{{row[4]}}.png" alt="Test" width="50">
+                                    {{ row[4] }}
+                                </a>
+                            </td>
+                            <td> {{ row[5] }} </td>
+                            <td> {{ row[2] }} </td>
+
+                        </tr>
+                    
+                        {% endfor %}
+                    </table>
+        </div>
+
+         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+         <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/js/bootstrap.min.js"></script>
+         <script src="https://cdn.jsdelivr.net/npm/js.geotools/dist/geotools.min.js"></script>
+         <script src="https://cdn.jsdelivr.net/npm/js.geotools/dist/geotools-swedish-zipcodes.min.js"></script>
+         <script src="https://cdn.jsdelivr.net/npm/moment@2.24.0/moment.min.js"></script>
+ 
+         <script src="../static/plugins/jquery.fancyTable/src/fancyTable.js"></script>
+
+         <script type="text/javascript">
+             // Word genarator
+                 // And make them fancy
+                 var fancyTableA = $("#sampleTableA").fancyTable({
+                     sortColumn:2,
+                     pagination: true,
+                     perPage:5,
+                     globalSearch:true
+                 });
+         </script>
+     </body>
+ </html>

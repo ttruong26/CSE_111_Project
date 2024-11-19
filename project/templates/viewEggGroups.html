@@ -1,0 +1,34 @@
+<!-- This is the page to view all egg groups found in the egg_groups table in pokeData.db -->
+<!DOCTYPE html>
+<html>
+    <body>
+        <h1>View Egg Groups: </h1>
+         <br>
+
+         <!-- Redirect to the homepage  -->
+         <a href = '/'><button>HomePage</button></a><br>
+
+
+         <h3>Egg Groups: </h3><br>
+         <table border = 1>
+
+            <!-- Define column headers -->
+            <tr>
+                <th>Pokemon</th>
+                <th>Egg Group 1</th>
+                <th>Egg Group 2</th>
+            </tr>
+
+            {% for row in allEggGroups %}
+        
+            <tr>
+                <td><a href="/viewIndPokemon/{{ row[0] }}"><img src="/static/images/pokemon/{{ row[0] }}.png" alt="Test" width="100"><br>{{ row[0] }}</a></td>
+               <td><a href="/viewIndEggGroup/{{ row[1] }}">{{ row[1] }}</a></td>
+               <td><a href="/viewIndEggGroup/{{ row[2] }}">{{ row[2] }}</a> </td>
+            </tr>
+        
+            {% endfor %}
+         </table> <br>
+
+    </body>
+</html>

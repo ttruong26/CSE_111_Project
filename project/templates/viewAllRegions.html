@@ -1,0 +1,50 @@
+<!-- This is the page to view all regions found in the region table in pokeData.db -->
+<!DOCTYPE html>
+<html>
+    <body>
+        <h1>View All Regions: </h1>
+         <br>
+
+         <!-- Redirect to the homepage  -->
+         <a href = '/'><button>HomePage</button></a><br>
+
+
+         <h3>Region Info: </h3><br>
+         <table border = 1>
+
+            <!-- Define column headers -->
+            <tr>
+                <th>Region Name</th>
+                <th>Generation</th>
+                <th>Fire Starter</th>
+                <th>Water Starter</th>
+                <th>Grass Starter</th>
+                <th>Legendary 1</th>
+                <th>Legendary 2</th>
+                <th>Legendary 3</th>
+            </tr>
+
+            <!-- The Regions variable was passed to this html page as an iterable list.
+                We can iterate through this list and display the data within the list using Jinja2 -->
+
+            {% for row in regions %}
+        
+            <tr>
+               <td><a href="/viewIndRegion/{{ row[0] }}">{{row[0]}}</a></td>
+               <td> {{ row[1] }} </td>
+               <!-- We can use the information pulled from each list object to include arguments in our redirects. 
+                    Here, we use the pokemon's name attribute to pass to another route that will pull up the view page for that pokemon -->
+               <td><a href="/viewIndPokemon/{{ row[2] }}"><img src="/static/images/pokemon/{{ row[2] }}.png" alt="Test" width="100"><br>{{ row[2] }}</a></td>
+               <td><a href="/viewIndPokemon/{{ row[3] }}"><img src="/static/images/pokemon/{{ row[3] }}.png" alt="Test" width="100"><br>{{ row[3] }}</a></td>
+               <td><a href="/viewIndPokemon/{{ row[4] }}"><img src="/static/images/pokemon/{{ row[4] }}.png" alt="Test" width="100"><br>{{ row[4] }}</a></td>
+               <td><a href="/viewIndPokemon/{{ row[5] }}"><img src="/static/images/pokemon/{{ row[5] }}.png" alt="Test" width="100"><br>{{ row[5] }}</a></td>
+               <td><a href="/viewIndPokemon/{{ row[6] }}"><img src="/static/images/pokemon/{{ row[6] }}.png" alt="Test" width="100"><br>{{ row[6] }}</a></td>
+               <td><a href="/viewIndPokemon/{{ row[7] }}"><img src="/static/images/pokemon/{{ row[7] }}.png" alt="Test" width="100"><br>{{ row[7] }}</a></td>
+
+            </tr>
+        
+            {% endfor %}
+         </table> <br>
+
+    </body>
+</html>
