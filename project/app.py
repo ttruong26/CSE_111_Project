@@ -342,6 +342,223 @@ def test():
 
     return render_template("test.html", regionInfo=json.dumps(_regionInfo))
 
+@app.route('/validateType', methods=['GET'])
+def validateType():
+    type_name = request.args.get('type', '').strip().lower()  # Convert to lowercase
+    if not type_name:
+        return jsonify({'isValid': False})
+    
+    conn = openConnection(database)
+    cur = conn.cursor()
+    
+    query = """SELECT COUNT(*)
+               FROM typeChart
+               WHERE LOWER(tc_type) = ?"""  # Use LOWER() in SQL to ensure case-insensitive comparison
+    
+    cur.execute(query, (type_name,))
+    result = cur.fetchone()
+    
+    closeConnection(conn, database)
+    
+    return jsonify({'isValid': result[0] > 0})
+
+@app.route('/validateRegion', methods=['GET'])
+def validateRegion():
+    region_name = request.args.get('region', '').strip().lower()  # Convert to lowercase
+    if not region_name:
+        return jsonify({'isValid': False})
+    
+    conn = openConnection(database)
+    cur = conn.cursor()
+    
+    query = """SELECT COUNT(*)
+               FROM region
+               WHERE LOWER(r_region_name) = ?"""  # Use LOWER() in SQL to ensure case-insensitive comparison
+    
+    cur.execute(query, (region_name,))
+    result = cur.fetchone()
+    print(result[0] > 0)
+    closeConnection(conn, database)
+    
+    return jsonify({'isValid': result[0] > 0})
+
+@app.route('/validatePokemon', methods=['GET'])
+def validatePokemon():
+    pokemon = request.args.get('pokemon', '').strip().lower()  # Convert to lowercase
+    if not pokemon:
+        return jsonify({'isValid': False})
+    
+    conn = openConnection(database)
+    cur = conn.cursor()
+    
+    query = """SELECT COUNT(*)
+               FROM pokemon
+               WHERE LOWER(p_name) = ?"""  # Use LOWER() in SQL to ensure case-insensitive comparison
+    
+    cur.execute(query, (pokemon,))
+    result = cur.fetchone()
+    print(result[0] > 0)
+    closeConnection(conn, database)
+    
+    return jsonify({'isValid': result[0] > 0})
+
+@app.route('/validateTrainerName', methods=['GET'])
+def validateTrainer():
+    trainer = request.args.get('trainerName', '').strip().lower()  # Convert to lowercase
+    if not trainer:
+        return jsonify({'isValid': False})
+    
+    conn = openConnection(database)
+    cur = conn.cursor()
+    
+    query = """SELECT COUNT(*)
+               FROM trainers
+               WHERE LOWER(t_name) = ?"""  # Use LOWER() in SQL to ensure case-insensitive comparison
+    
+    cur.execute(query, (trainer,))
+    result = cur.fetchone()
+    print(result[0] > 0)
+    closeConnection(conn, database)
+    
+    return jsonify({'isValid': result[0] == 0})
+
+@app.route('/searchPokemon', methods=['GET'])
+def searchPokemon():
+    query = request.args.get('query', '').strip().lower()
+    image_folder = './static/images/pokemon'
+    
+    try:
+        conn = openConnection(database)
+        cur = conn.cursor()
+
+        # Query Pokémon names matching the search term
+        search_query = """
+            SELECT p_name AS name
+            FROM pokemon
+            WHERE LOWER(p_name) LIKE ?
+            LIMIT 10
+        """
+        cur.execute(search_query, (f'%{query}%',))
+        results = [{'name': row[0], 'image': f'{row[0]}.png'} for row in cur.fetchall()]
+        # Verify if the image exists in the folder
+        
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    finally:
+        closeConnection(conn, database)
+    print(results)
+    return jsonify(results)
+
+@app.route('/populateCustomTrainer', methods=['POST'])
+def populateCustomTrainer():
+    trainer_name = request.form.get('trainerName')
+    region = request.form.get('region')
+    trainer_type = request.form.get('type').lower() 
+    generation = request.form.get('generation')
+    pokemon_team = request.form.getlist('pokemon[]')
+    image = request.files['image']
+
+    # Handle optional image upload
+    if image and image.filename != '':
+        # Save the uploaded image to the static/images/trainers folder
+        image_path = f'static/images/trainers/{trainer_name}.png'
+        image.save(image_path)
+        print("Custom image uploaded and saved.")
+    else:
+        # Use a default image if no image is uploaded
+        default_image_path = 'static/images/trainers/default.png'
+        image_path = f'static/images/trainers/{trainer_name}.png'
+
+        # Open the default image and write it to the new path
+        with open(default_image_path, 'rb') as default_file:
+            with open(image_path, 'wb') as new_file:
+                new_file.write(default_file.read())
+        print("Default image used and saved.")
+
+
+    try:
+        generation = int(request.form.get('generation', 0))  # Default to 0 if not provided
+    except ValueError:
+        return jsonify({'error': 'Invalid generation value. Must be an integer.'}), 400
+    try:
+        conn = openConnection(database)
+        cur = conn.cursor()
+
+        query = """
+                Select MAX(t_id)
+                    FROM trainers
+                """
+        cur.execute(query)
+        newID = cur.fetchone()[0]
+
+        # Insert trainer into the database
+        trainer_query = """
+            INSERT INTO trainers (t_id,t_region,t_gen,t_name,t_type,t_role)
+            VALUES (?, ?, ?, ?, ?,"Custom")
+        """
+        cur.execute(trainer_query, (newID,region,generation,trainer_name,trainer_type))
+
+        # Insert Pokémon team into trainer_to_pokemon table
+        for pokemon in pokemon_team:
+            team_query = """
+                INSERT INTO trainer_to_pokemon (tp_trainer, tp_pokemon)
+                VALUES (?, ?)
+            """
+            cur.execute(team_query, (trainer_name, pokemon))
+        
+        conn.commit()
+    except Exception as e:
+        conn.rollback()
+        return jsonify({'error': str(e)}), 500
+    finally:
+        closeConnection(conn, database)
+
+    return redirect('/customTrainers')
+    
+    
+
+
+
+@app.route('/customTrainers', methods=['GET'])
+def getCustomTrainers():
+
+    sql = """SELECT * 
+                 FROM trainers
+                 Where t_role = "Custom"
+            """
+     
+    conn = openConnection(database)
+    cur = conn.cursor()
+    cur.execute(sql)
+    _allTrainers = cur.fetchall()
+     
+    return render_template('customTrainer.html', allTrainers = _allTrainers)
+
+@app.route('/deleteTrainerByName/<trainer_name>', methods=['DELETE'])
+def deleteTrainerByName(trainer_name):
+    try:
+        conn = openConnection(database)
+        cur = conn.cursor()
+
+        # Delete the trainer's Pokémon team
+        delete_team_query = """
+            DELETE FROM trainer_to_pokemon WHERE tp_trainer = ?
+        """
+        cur.execute(delete_team_query, (trainer_name,))
+
+        # Delete the trainer
+        delete_trainer_query = "DELETE FROM trainers WHERE t_name = ?"
+        cur.execute(delete_trainer_query, (trainer_name,))
+
+        conn.commit()
+    except Exception as e:
+        conn.rollback()
+        return jsonify({'error': str(e)}), 500
+    finally:
+        closeConnection(conn, database)
+
+    return jsonify({'success': True}), 200
 
 
 if __name__ == '__main__':
