@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>Custom Trainer</title>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet">
+    </head>
+    <body>
+        <div class="container">
+            <h1>Create Your Custom Trainer</h1>
+            <br>
+            <!-- Redirect to the homepage -->
+            <a href="/">
+                <button class="btn btn-primary">HomePage</button>
+            </a>
+            <br><br>
+
+            <!-- Custom Trainer Form -->
+            <form id="customTrainerForm" class="mb-3" action="/populateCustomTrainer" method="POST" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="trainerName">Trainer Name</label>
+                    <input type="text" id="trainerName" name="trainerName" class="form-control" placeholder="Enter trainer name" required>
+                    <div id="trainerNameError" class="text-danger"></div>
+                </div>
+                <div class="form-group">
+                    <label for="region">Region</label>
+                    <input type="text" id="region" name="region" class="form-control" placeholder="Enter region" required>
+                    <div id="regionError" class="text-danger"></div>
+                </div>
+                <div class="form-group">
+                    <label for="type">Type</label>
+                    <input type="text" id="type" name="type" class="form-control" placeholder="Enter type" required>
+                    <div id="typeError" class="text-danger"></div>
+                </div>
+                <div class="form-group">
+                    <label for="generation">Generation</label>
+                    <input type="number" id="generation" name="generation" class="form-control" placeholder="Enter generation" required>
+                </div>
+                <div class="form-group">
+                    <label for="image">Upload Image (Optional)</label>
+                    <input type="file" id="image" name="image" class="form-control-file" accept="image/*">
+                </div>                
+                <div class="form-group input-group">
+                    <input type="search" id="search-bar" name="pokemon[]" class="form-control validate-pokemon" placeholder="Search for Pokémon" required>
+                    <button type="button" class="btn btn-danger remove-bar">X</button>
+                </div>
+                <div id="pokemon-autofill-table-container" class="mt-2"></div> <!-- Placeholder for the autofill table -->
+                
+                <div id="extra-search-bars"></div>
+                <div class="form-group">
+                    <button type="button" id="addPokemonButton" class="btn btn-secondary">Add New Pokemon</button>
+                    <button type="submit" class="btn btn-success" id="submitButton">Create Trainer</button>
+                </div>
+                <div id="error-message" class="text-danger"></div>
+            </form>
+
+            <!-- Trainers Table -->
+            <h2>View All Custom Trainers</h2>
+            <table id="sampleTableA" class="table table-striped sampleTable">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Trainer Name</th>
+                        <th>Id</th>
+                        <th>Region</th>
+                        <th>Type</th>
+                        <th>Role</th>
+                        <th>Generation</th>
+                        <th>Actions</th> <!-- New column for actions -->
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in allTrainers %}
+                    <tr data-trainer-name="{{ row[3] }}"> <!-- Include trainer name for easier identification -->
+                        <td><img src="/static/images/trainers/{{ row[3] }}.png" alt="Test" width="100"></td>
+                        <td><a href="/viewIndTrainer/{{ row[3] }}">{{ row[3] }}</a></td>
+                        <td>{{ row[0] }}</td>
+                        <td>{{ row[1] }}</td>
+                        <td><a href="/viewIndType/{{ row[4] }}">
+                                <img src="/static/images/typeIcons/{{ row[4] }}.png" alt="Test" width="50">
+                                {{ row[4] }}
+                            </a>
+                        </td>
+                        <td>{{ row[5] }}</td>
+                        <td>{{ row[2] }}</td>
+                        <td>
+                            <button class="btn btn-danger delete-trainer-button" data-trainer-name="{{ row[3] }}">Delete</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/js/bootstrap.min.js"></script>
+        <script>
+            const maxSearchBars = 5;
+
+            async function validateTrainerName(trainerName) {
+                const response = await fetch(`/validateTrainerName?trainerName=${encodeURIComponent(trainerName)}`);
+                const data = await response.json();
+                return data.isValid;
+            }
+
+            async function validateType(type) {
+                const response = await fetch(`/validateType?type=${encodeURIComponent(type)}`);
+                const data = await response.json();
+                return data.isValid;
+            }
+
+            async function validateRegion(region) {
+                const response = await fetch(`/validateRegion?region=${encodeURIComponent(region)}`);
+                const data = await response.json();
+                return data.isValid;
+            }
+
+            async function validatePokemon(pokemon) {
+                const response = await fetch(`/validatePokemon?pokemon=${encodeURIComponent(pokemon)}`);
+                const data = await response.json();
+                return data.isValid;
+            }
+
+            document.getElementById('trainerName').addEventListener('blur', async (event) => {
+                const trainerNameInput = event.target.value.trim();
+                const trainerNameError = document.getElementById('trainerNameError');
+                const submitButton = document.getElementById('submitButton');
+                if (trainerNameInput) {
+                    const isValid = await validateTrainerName(trainerNameInput);
+                    if (!isValid) {
+                        trainerNameError.textContent = 'Trainer name already exists. Please choose a different name.';
+                        submitButton.disabled = true;
+                    } else {
+                        trainerNameError.textContent = '';
+                        submitButton.disabled = false;
+                    }
+                }
+            });
+
+            document.addEventListener('DOMContentLoaded', () => {
+                const autofillContainer = document.getElementById('pokemon-autofill-table-container');
+                const extraSearchBars = document.getElementById('extra-search-bars');
+
+                // Event delegation for all search bars (including dynamically added ones)
+                document.addEventListener('input', async (event) => {
+                    if (event.target.classList.contains('validate-pokemon')) {
+                        const query = event.target.value.trim();
+
+                        if (query.length > 0) {
+                            try {
+                                const response = await fetch(`/searchPokemon?query=${encodeURIComponent(query)}`);
+                                
+                                if (!response.ok) {
+                                    console.error('Failed to fetch Pokémon data:', response.status, response.statusText);
+                                    autofillContainer.innerHTML = '<p class="text-danger">Error fetching data. Please try again.</p>';
+                                    return;
+                                }
+
+                                const data = await response.json();
+
+                                // Validate if data is an array
+                                if (Array.isArray(data) && data.length > 0) {
+                                    autofillContainer.innerHTML = `
+                                        <table class="table table-striped table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Image</th>
+                                                    <th>Name</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                ${data.map(pokemon => `
+                                                    <tr class="autofill-row" data-pokemon-name="${pokemon.name}">
+                                                        <td><img src="/static/images/pokemon/${pokemon.image}" alt="${pokemon.name}" width="50"></td>
+                                                        <td>${pokemon.name}</td>
+                                                    </tr>
+                                                `).join('')}
+                                            </tbody>
+                                        </table>
+                                    `;
+
+                                    // Add event listeners to rows for selection
+                                    document.querySelectorAll('.autofill-row').forEach(row => {
+                                        row.addEventListener('click', () => {
+                                            event.target.value = row.getAttribute('data-pokemon-name');
+                                            autofillContainer.innerHTML = ''; // Clear the table after selection
+                                        });
+                                    });
+                                } else {
+                                    autofillContainer.innerHTML = '<p class="text-muted">No matches found.</p>';
+                                }
+                            } catch (error) {
+                                console.error('Error fetching Pokémon data:', error);
+                                autofillContainer.innerHTML = '<p class="text-danger">Error fetching data. Please try again.</p>';
+                            }
+                        } else {
+                            autofillContainer.innerHTML = ''; // Clear the table if query is empty
+                        }
+                    }
+                });
+
+                // Logic for dynamically adding search bars
+                const addPokemonButton = document.getElementById('addPokemonButton');
+                addPokemonButton.addEventListener('click', () => {
+                    if (extraSearchBars.childElementCount < 5) { // Limit to 5 Pokémon
+                        const newSearchBar = document.createElement('div');
+                        newSearchBar.classList.add('form-group', 'input-group');
+                        newSearchBar.innerHTML = `
+                            <input type="search" name="pokemon[]" class="form-control validate-pokemon" placeholder="Search for Pokémon" required>
+                            <button type="button" class="btn btn-danger remove-bar">X</button>
+                            <div class="pokemonError text-danger"></div>
+                        `;
+                        extraSearchBars.appendChild(newSearchBar);
+
+                        // Attach event listener for remove button
+                        newSearchBar.querySelector('.remove-bar').addEventListener('click', () => {
+                            newSearchBar.remove();
+                        });
+                    } else {
+                        alert('You can only add up to 6 Pokémon.');
+                    }
+                });
+});
+
+
+
+            document.getElementById('type').addEventListener('blur', async (event) => {
+                const typeInput = event.target.value.trim();
+                const typeError = document.getElementById('typeError');
+                if (typeInput) {
+                    const isValid = await validateType(typeInput);
+                    typeError.textContent = isValid ? '' : 'Invalid type. Please enter a valid type.';
+                }
+            });
+
+            document.getElementById('region').addEventListener('blur', async (event) => {
+                const regionInput = event.target.value.trim();
+                const regionError = document.getElementById('regionError');
+                if (regionInput) {
+                    const isValid = await validateRegion(regionInput);
+                    regionError.textContent = isValid ? '' : 'Invalid region. Please enter a valid region.';
+                }
+            });
+
+            document.addEventListener('blur', async (event) => {
+                if (event.target.classList.contains('validate-pokemon')) {
+                    const pokemonInput = event.target.value.trim();
+                    const pokemonError = event.target.nextElementSibling;
+                    if (pokemonInput) {
+                        const isValid = await validatePokemon(pokemonInput);
+                        pokemonError.textContent = isValid ? '' : 'Invalid Pokémon. Please enter a valid Pokémon.';
+                    }
+                }
+            }, true);
+            document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.delete-trainer-button').forEach(button => {
+                button.addEventListener('click', async (event) => {
+                    const trainerName = event.target.getAttribute('data-trainer-name');
+
+                    if (confirm(`Are you sure you want to delete trainer "${trainerName}"?`)) {
+                        try {
+                            const response = await fetch(`/deleteTrainerByName/${encodeURIComponent(trainerName)}`, {
+                                method: 'DELETE'
+                            });
+
+                            if (response.ok) {
+                                alert('Trainer deleted successfully.');
+                                event.target.closest('tr').remove(); // Remove the row from the table
+                            } else {
+                                const errorData = await response.json();
+                                alert(`Error deleting trainer: ${errorData.error}`);
+                            }
+                        } catch (error) {
+                            console.error('Error deleting trainer:', error);
+                            alert('Failed to delete the trainer. Please try again.');
+                        }
+                    }
+                });
+            });
+        });
+           
+
+            function fetchCustomTrainers() {
+                fetch('/getCustomTrainers')
+                    .then(response => response.json())
+                    .then(data => populateCustomTrainersTable(data))
+                    .catch(error => console.error('Error fetching trainers:', error));
+            }
+
+            function setupCustomTrainer() {
+                document.getElementById('addPokemonButton').addEventListener('click', addNewSearchBar);
+
+                document.getElementById('customTrainerForm').addEventListener('submit', (event) => {
+                    const searchBars = document.querySelectorAll('#extra-search-bars input, #search-bar');
+                    if (searchBars.length === 0) {
+                        event.preventDefault();
+                        document.getElementById('error-message').textContent = 'You must have at least one Pokémon on your team.';
+                    }
+                });
+
+                // Fetch trainers initially
+                fetchCustomTrainers();
+
+                // Apply fancy table to trainers table
+                $("#sampleTableA").fancyTable({
+                    sortColumn: 2,
+                    pagination: true,
+                    perPage: 5,
+                    globalSearch: true
+                });
+            }
+
+            document.addEventListener('DOMContentLoaded', setupCustomTrainer);
+        </script>
+    </body>
+</html>
